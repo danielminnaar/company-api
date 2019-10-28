@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+
 using api_src.Models;
 
 namespace api_src
@@ -30,7 +32,6 @@ namespace api_src
             services.AddControllers();
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
