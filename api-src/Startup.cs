@@ -52,6 +52,8 @@ namespace api_src
                     ValidateAudience = false
                 };
             });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +63,8 @@ namespace api_src
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseCors(options => options.WithOrigins("http://localhost").AllowAnyMethod());
 
             app.UseRouting();
 
