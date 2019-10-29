@@ -11,6 +11,15 @@ namespace api_src.tests
             companies.Add(new Company() { Id = 1, Name = "Test 1", Ticker = "Ticker 1", Exchange = "EXCH1", ISIN = "AB1234567890", Website = ""});
             companies.Add(new Company() { Id = 2, Name = "Test 2", Ticker = "Ticker 2", Exchange = "EXCH2", ISIN = "CD1234567890", Website = "test.com"});
         }
+
+        public string Authenticate(string username, string password)
+        {
+            if(username == "test" && password == "test")
+                return "OK";
+            else
+                return "";
+        }
+
         public void Create(Company newCompany)
         {
             companies.Add(newCompany);

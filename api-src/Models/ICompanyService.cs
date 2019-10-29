@@ -12,5 +12,6 @@ namespace api_src.Models{
         Company GetByISIN(string isin);
         void Update(int id, Company updatedCompany);
         void Create(Company newCompany);
+        string Authenticate(string username, string password);
     } 
 }

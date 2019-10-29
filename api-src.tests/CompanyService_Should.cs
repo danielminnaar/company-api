@@ -3,6 +3,7 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using api_src.Models;
 namespace api_src.tests
 {
     public class CompanyService_Should
@@ -57,6 +58,14 @@ namespace api_src.tests
             var okResult = response as OkObjectResult;
             var company = okResult.Value as Company;
             Assert.Equal(company.ISIN, ISIN);
+        }
+
+        [Fact]
+        public void Util_AuthenticationShouldReturnOK()
+        {
+            var auth = new Authentication() { Username = "test", Password = "test" };
+            var response = _controller.Authenticate(auth);
+            Assert.IsType<OkObjectResult>(response);
         }
 
         [Fact]

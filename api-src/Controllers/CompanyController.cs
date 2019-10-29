@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace api_src.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     [ApiController]
     public class CompanyController : ControllerBase
     {
@@ -17,6 +18,28 @@ namespace api_src.Controllers
         public CompanyController(ICompanyService service)
         {
             _service = service;
+        }
+
+        [HttpGet]
+        [Route("test")]
+        public IActionResult test()
+        {
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult Authenticate([FromBody]Authentication auth)
+        {
+            
+            var token = _service.Authenticate(auth.Username, auth.Password);
+
+            if (token == "")
+                return Unauthorized(new { message = "Username or password is incorrect" });
+
+            return Ok(token);
         }
 
         [HttpGet]
