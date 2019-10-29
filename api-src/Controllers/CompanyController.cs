@@ -9,27 +9,20 @@ using Microsoft.AspNetCore.Authorization;
 namespace api_src.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly ApiDbContext _context;
+        private readonly ICompanyService _service;
 
-        public CompanyController(ApiDbContext context)
+        public CompanyController(ICompanyService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        [Route("check")]
-        public object check() {
-            return "works";
-        }
-
-        [HttpGet]
-        public List<Company> Get()
+        public IActionResult Get()
         {
-            return _context.Companies.ToList<Company>();
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("{id}")]
@@ -37,9 +30,9 @@ namespace api_src.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id)
         {
-            var obj = _context.Companies.Where(b => b.Id == id).FirstOrDefault();
-            if (obj != null)
-                return Ok(obj);
+            var company = _service.GetById(id);
+            if (company != null)
+                return Ok(company);
             else
                 return NotFound();
            
@@ -51,9 +44,9 @@ namespace api_src.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetByISIN(string isin)
         {
-            var obj = _context.Companies.Where(b => b.ISIN == isin).FirstOrDefault();
-            if (obj != null)
-                return Ok(obj);
+            var company = _service.GetByISIN(isin);
+            if (company != null)
+                return Ok(company);
             else
                 return NotFound("Couldn't find ISIN " + isin);
            
@@ -69,19 +62,15 @@ namespace api_src.Controllers
             if(!IsValidISINFormat(c.ISIN))
                 return BadRequest("Invalid ISIN");
 
-            var existingCompany = _context.Companies.Where(comp => comp.Id == id).FirstOrDefault();
-            if(existingCompany != null)
+            try
             {
-                existingCompany.Name = c.Name;
-                existingCompany.ISIN = c.ISIN;
-                existingCompany.Website = c.Website;
-                existingCompany.Ticker = c.Ticker;
-                existingCompany.Exchange = c.Exchange;
-                _context.SaveChanges();
+                _service.Update(id, c);
                 return Ok("Company updated");
             }
-            else
-                return NotFound("The company does not exist");
+            catch (System.Exception ex)
+            {
+                return BadRequest("Cannot update company - does it exist? Error: " + ex.Message);
+            }
 
         }
 
@@ -95,22 +84,39 @@ namespace api_src.Controllers
             if(!IsValidISINFormat(c.ISIN))
                 return BadRequest("Invalid ISIN");
 
-            // Sanitize
-            var comp = new Company() { Name = c.Name, Exchange = c.Exchange, ISIN = c.ISIN, Ticker = c.Ticker, Website = c.Website};
-            _context.Companies.Add(comp);
-            _context.SaveChanges();
-            return Ok("Company created");
+            try
+            {
+                // Sanitize
+                var comp = new Company() { Name = c.Name, Exchange = c.Exchange, ISIN = c.ISIN, Ticker = c.Ticker, Website = c.Website};
+                _service.Create(comp);
+                return Ok("Company created");
+            }
+            catch (System.Exception ex)
+            {
+                // Sanitize
+                return BadRequest("Cannot create company. Error: " + ex.Message);
+            }
+            
+            
         }
 
-        private bool ISINExists(string ISIN, int excludeId = -1)
+        public bool ISINExists(string ISIN, int excludeId = -1)
         {
-            if(_context.Companies.Where(company => company.ISIN.ToUpper() == ISIN.ToUpper() && company.Id != excludeId).FirstOrDefault() == null)
-                return false;
-            else
+            var company = _service.GetByISIN(ISIN);
+            if(excludeId >= 0)
+            {
+                if(company != null && company.Id != excludeId)
+                    return true;
+            }
+            else if (company != null)
                 return true;
+            else
+                return false;
+
+            return false;
         }
 
-        private bool IsValidISINFormat(string ISIN) 
+        public bool IsValidISINFormat(string ISIN) 
         {
             ISIN = ISIN.Trim().ToUpper();
             Regex r = new Regex("^[A-Z]{2}[A-Z0-9]{10}");

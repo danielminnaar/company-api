@@ -31,6 +31,7 @@ namespace api_src
         {
             services.AddControllers();
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            services.AddScoped<ICompanyService, CompanyDBService>();
             services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
         }
 
