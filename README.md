@@ -23,10 +23,10 @@ The API and REST client runtime is externally accessible:
 The client provides basic functionality to interact with the company api, although additional endpoints are available on the API to call directly. All endpoints use the `/company/` base URI.
 
 You need to authenticate before interacting with most endpoints; this is achieved by making a POST to `/authenticate` using the following credentials as a JSON payload:
-{
+`{
    "Username": "companyadmin",
    "Password": "password"
-}
+}`
 
 The REST client does all this for you, by clicking on the `Authenticate` button.
 
