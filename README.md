@@ -18,7 +18,7 @@ An overview of the solution:
 The API and REST client runtime is externally accessible:
 * Client: http://ec2-52-34-75-216.us-west-2.compute.amazonaws.com/api-client/index.html
 * API: http://ec2-52-34-75-216.us-west-2.compute.amazonaws.com/company
-
+* Refer to the `company-api.yaml` OpenAPI definition for API reference (use http://editor.swagger.com to view)
 
 The client provides basic functionality to interact with the company api, although additional endpoints are available on the API to call directly. All endpoints use the /company/ base URI.
 
