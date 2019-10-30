@@ -32,9 +32,14 @@ namespace api_src
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            // our connection string for Postgres. This environment variable is created by docker for the DB image
+            // so if we wanted to run this locally we'd need to create the ENV on the local host
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddScoped<ICompanyService, CompanyDBService>();
             services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
+
+            // enable JWT auth
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,7 +58,16 @@ namespace api_src
                 };
             });
 
-            services.AddCors();
+            // allow our REST client to call the app on a different server/container
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +78,7 @@ namespace api_src
                 app.UseDeveloperExceptionPage();
             }
             
-            app.UseCors(options => options.WithOrigins("http://localhost").AllowAnyMethod());
+            app.UseCors("AllowAll");
 
             app.UseRouting();
 

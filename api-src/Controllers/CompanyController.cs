@@ -20,13 +20,23 @@ namespace api_src.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Just using this to test that my endpoints/routing works
+        /// </summary>
+        /// <returns>A 200 OK</returns>
         [HttpGet]
+        [AllowAnonymous]
         [Route("test")]
         public IActionResult test()
         {
             return Ok();
         }
 
+        /// <summary>
+        /// Used for initial JWT authentication 
+        /// </summary>
+        /// <param name="auth"></param>
+        /// <returns>A signed token, if successful</returns>
         [AllowAnonymous]
         [HttpPost("authenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,6 +85,13 @@ namespace api_src.Controllers
            
         }
 
+        /// <summary>
+        /// Update an existing Company entity. We don't expect or want the updated entity from the client to include the Id,
+        /// so we strip it out by creating a new entity based on the old one. This also allows us to sanitize each field before just updating it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -138,7 +155,11 @@ namespace api_src.Controllers
 
             return false;
         }
-
+        /// <summary>
+        /// A validation check for ISIN format, defined as per ISO-6166
+        /// </summary>
+        /// <param name="ISIN"></param>
+        /// <returns></returns>
         public bool IsValidISINFormat(string ISIN) 
         {
             ISIN = ISIN.Trim().ToUpper();

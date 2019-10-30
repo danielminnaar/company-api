@@ -14,15 +14,60 @@
   <h1>Company API</h1>
   <h3>daniel.minnaar@gmail.com</h3>
   <br>
-  API Endpoint: <input type="text" style="width: 300px;" value="http://localhost:8000/company"/>
+  API Endpoint: <input id="txtHost" type="text" style="width: 300px;" value="http://localhost:8000/company"/><input id="btnUpdateHost" type="submit" value="Update"/>
   <br>
   <h3>Input:</h3>
   <input id="btnAuth" type="submit" value="Authenticate"/>
   <input id="btnGetAll" type="submit"  value="Get All Companies"/>
   <input id="btnGetCompany" type="submit"  value="Get Company (Id = 1)"/>
-  <input id="btnCreateCompany" type="submit" value="Create Company"/>
+  <input id="btnCreateCompany" type="submit" value="Create Company (Toggle)"/>
+  <div id="companyDetails" style="width: 800px; height: 200px;">
+    <table>
+      <tr>
+        <td><label>Name: </label></td>
+        <td><input id="txtName" type="text"/></td>
+      </tr>
+      <tr>
+        <td>
+          <label>Exchange: </label>
+        </td>
+        <td>
+          <input id="txtExchange" type="text"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Ticker: </label>
+        </td>
+        <td>
+          <input id="txtTicker" type="text"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>ISIN: </label>
+        </td>
+        <td>
+          <input id="txtISIN" type="text"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Website: </label>
+        </td>
+        <td>
+            <input id="txtWebsite" type="text"/>
+          
+        </td>
+      </tr>
+    </table>
+    <input id="btnCreate" type="submit" value="Create"/>
+    
+   <br>
+    
+  </div>  
   <h3>Output:</h3>
-  <div id="lblOutput" style="width: 500px; height: 300px; border-style: solid; border-width:1px;">
+  <div id="lblOutput" style="width: 800px; height: 300px; border-style: solid; border-width:1px;">
   </div>
   
 </body>
